@@ -49,7 +49,7 @@ Brief explanation of FCFS, Priority, and Round Robin.
 Ashish Singh,
 Karan Sr. Maurya,
 Lakhan Bhardwaj,
-Kamal Sharma
+Nayan
 
 ## 📄 License
 MIT License# mosX
