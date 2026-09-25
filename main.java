@@ -159,4 +159,151 @@ class ProcessManager {
             if (p.getPid() == pid)
                 return p;
                 return null;
+           }
+
+    public void showProcesses() {
+        System.out.println("\n--------------- PROCESSES ---------------");
+
+        System.out.printf(
+                "%-6s %-15s %-10s %-10s %-10s%n",
+                "PID", "Name", "State",
+                "Priority", "Remaining"
+        );
+
+        for (Process p : processes)
+            p.display();
+    }
+
+    public void pause(int pid) {
+        Process p = find(pid);
+
+        if (p != null) {
+            p.pause();
+            System.out.println("Process paused.");
+        } else {
+            System.out.println("Process not found.");
+        }
+    }
+
+    public void resume(int pid) {
+        Process p = find(pid);
+
+        if (p != null) {
+            p.resume();
+            System.out.println("Process resumed.");
+        } else {
+            System.out.println("Process not found.");
+        }
+    }
+
+    public void terminate(int pid) {
+        Process p = find(pid);
+
+        if (p != null) {
+            p.terminate();
+            System.out.println("Process terminated.");
+        } else {
+            System.out.println("Process not found.");
+        }
+    }
+
+    public List<Process> getProcesses() {
+        return processes;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        ProcessManager manager = new ProcessManager();
+
+        int choice;
+
+        do {
+            System.out.println("\n================================");
+            System.out.println("      OS PROCESS MANAGER");
+            System.out.println("================================");
+            System.out.println("1. Create Process");
+            System.out.println("2. Show Processes");
+            System.out.println("3. Run Scheduler");
+            System.out.println("4. Pause Process");
+            System.out.println("5. Resume Process");
+            System.out.println("6. Terminate Process");
+            System.out.println("7. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+
+                case 1:
+                    System.out.print("Process Name: ");
+                    String name = sc.next();
+
+                    System.out.print("Priority: ");
+                    int priority = sc.nextInt();
+
+                    System.out.print("Burst Time: ");
+                    int burst = sc.nextInt();
+
+                    manager.create(name, priority, burst);
+                    break;
+
+                case 2:
+                    manager.showProcesses();
+                    break;
+
+                case 3:
+                    System.out.println("\n1. FCFS");
+                    System.out.println("2. Priority");
+                    System.out.println("3. Round Robin");
+                    System.out.print("Choose: ");
+
+                    int type = sc.nextInt();
+                    Scheduler scheduler = null;
+
+                    if (type == 1)
+                        scheduler = new FCFS();
+
+                    else if (type == 2)
+                        scheduler = new PriorityScheduler();
+
+                    else if (type == 3) {
+                        System.out.print("Time Quantum: ");
+                        int q = sc.nextInt();
+                        scheduler = new RoundRobin(q);
+                    }
+
+                    if (scheduler != null)
+                        scheduler.schedule(manager.getProcesses());
+
+                    break;
+
+                case 4:
+                    System.out.print("PID: ");
+                    manager.pause(sc.nextInt());
+                    break;
+
+                case 5:
+                    System.out.print("PID: ");
+                    manager.resume(sc.nextInt());
+                    break;
+
+                case 6:
+                    System.out.print("PID: ");
+                    manager.terminate(sc.nextInt());
+                    break;
+
+                case 7:
+                    System.out.println("Program ended.");
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+        } while (choice != 7);
+
+        sc.close();
+    }
 }
